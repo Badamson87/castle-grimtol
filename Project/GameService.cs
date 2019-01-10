@@ -8,6 +8,7 @@ namespace CastleGrimtol.Project
   public class GameService : IGameService
   {
     public bool win = false;
+    public bool playing = true;
 
 
     public IRoom CurrentRoom { get; set; }
@@ -15,6 +16,8 @@ namespace CastleGrimtol.Project
 
     public void GetUserInput()
     {
+      string input = Console.ReadLine().ToLower();
+      string action = input.Split(" ");
 
 
     }
@@ -59,6 +62,7 @@ namespace CastleGrimtol.Project
       Room vault = new Room("vault", "des");
       Room exit = new Room("exit", "description");
       Room train = new Room("train", "des");
+      Room church = new Room("church", "description");
 
       // add exits to room
 
@@ -71,6 +75,7 @@ namespace CastleGrimtol.Project
       north.Exits.Add("main", main);
       bridge.Exits.Add("vault", vault);
       bridge.Exits.Add("north", north);
+      bridge.Exits.Add("church", church);// add from when monster
       vault.Exits.Add("bridge", bridge);
 
 
@@ -85,12 +90,20 @@ namespace CastleGrimtol.Project
 
     public void StartGame(Player player)
     {
-      Console.Clear();
       CurrentPlayer = player;
       CurrentPlayer.Inventory = new List<Item>();
       Setup();
-      while (win == false)
+      Console.WriteLine("intro to the story");
+
+      while (playing)
       {
+        if (CurrentRoom.Name == "church")
+        {
+          Console.WriteLine("Description for winning");
+          win = true;
+          break;
+        }
+        Console.WriteLine("accept bomb");
 
       }
 

@@ -17,14 +17,23 @@ namespace CastleGrimtol.Project
     public void GetUserInput()
     {
       string input = Console.ReadLine().ToLower();
-      string action = input.Split(" ");
+      string[] action = input.Split(" ");
+      if (action[0] == "go" || action.Length > 1)
+      {
+        Go(action[1]);
+      }
 
 
     }
 
     public void Go(string direction)
     {
-
+      if (CurrentRoom.Exits.ContainsKey(direction))
+      {
+        CurrentRoom = CurrentRoom.Exits[direction];
+        Console.WriteLine(CurrentRoom.Description);
+        GetUserInput();
+      }
     }
 
     public void Help()
@@ -55,28 +64,28 @@ namespace CastleGrimtol.Project
     public void Setup()
     {
       //first, create all local variable (rooms and items) needed for gameplay
-      Room platform = new Room("Platform", "description");
-      Room main = new Room("main", "Description");
-      Room north = new Room("north", "description");
-      Room bridge = new Room("bridge", "description");
-      Room vault = new Room("vault", "des");
-      Room exit = new Room("exit", "description");
-      Room train = new Room("train", "des");
-      Room church = new Room("church", "description");
+      Room platform = new Room("Platform", "description for the platform");
+      Room main = new Room("main", "Description for the main room");
+      Room storage = new Room("storage", "description for the storage room");
+      Room bridge = new Room("bridge", "description for the bridge");
+      Room vault = new Room("vault", "description for the vault");
+      Room exit = new Room("exit", "description for the exit");
+      Room train = new Room("train", "desciption for the train");
+      Room church = new Room("church", "description for the church");
 
       // add exits to room
 
-      platform.Exits.Add("train", train);
-      platform.Exits.Add("main", main);
-      main.Exits.Add("north", north);
-      main.Exits.Add("exit", exit);
-      main.Exits.Add("platform", platform);
-      north.Exits.Add("bridge", bridge);
-      north.Exits.Add("main", main);
-      bridge.Exits.Add("vault", vault);
-      bridge.Exits.Add("north", north);
-      bridge.Exits.Add("church", church);// add from when monster
-      vault.Exits.Add("bridge", bridge);
+      platform.Exits.Add("south", train);
+      platform.Exits.Add("east", main);
+      main.Exits.Add("north", storage);
+      main.Exits.Add("south", exit);
+      main.Exits.Add("west", platform);
+      storage.Exits.Add("east", bridge);
+      storage.Exits.Add("south", main);
+      bridge.Exits.Add("east", vault);
+      bridge.Exits.Add("west", storage);
+      //   bridge.Exits.Add("church", church);// add from when monster
+      vault.Exits.Add("west", bridge);
 
 
 
@@ -93,7 +102,7 @@ namespace CastleGrimtol.Project
       CurrentPlayer = player;
       CurrentPlayer.Inventory = new List<Item>();
       Setup();
-      Console.WriteLine("intro to the story");
+      Console.WriteLine("If find yourself on a platform approached by a one armed man he beckons you to follow him and then turns and runs away");
 
       while (playing)
       {
@@ -103,7 +112,8 @@ namespace CastleGrimtol.Project
           win = true;
           break;
         }
-        Console.WriteLine("accept bomb");
+        Console.WriteLine("What do you want to do");
+        GetUserInput();
 
       }
 

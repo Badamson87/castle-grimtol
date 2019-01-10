@@ -47,17 +47,17 @@ namespace CastleGrimtol.Project
 
       // create items
       Item bomb = new Item("bomb", "description for the bomb");
-      Item fBox = new Item("fBox", "description for boxs full of parts");
-      Item eBox = new Item("eBox", "description for empty box");
-      Item keyCard = new Item("keyCard", "description for the key card");
+      //   Item full = new Item("full", "description for boxs full of parts");
+      Item crate = new Item("crate", "description for empty box");
+      Item key = new Item("key", "description for the key card");
       Item flask = new Item("flask", "description for the flask");
       Item sword = new Item("sword", "Its still pretty sharp even if it is busted.");
 
       //second, add items to rooms and player
       platform.Items.Add(bomb);
-      main.Items.Add(fBox);
-      main.Items.Add(eBox);
-      main.Items.Add(keyCard);
+      //   main.Items.Add(full);
+      main.Items.Add(crate);
+      main.Items.Add(key);
       storage.Items.Add(flask);
       CurrentPlayer.Inventory.Add(sword);
 
@@ -75,10 +75,6 @@ namespace CastleGrimtol.Project
       {
         Go(action[1]);
       }
-      else if (action[0] == "look" && action.Length > 1)
-      {
-        Look();
-      }
       else if (action[0] == "use" && action.Length > 1)
       {
         UseItem(action[1]);
@@ -86,6 +82,14 @@ namespace CastleGrimtol.Project
       else if (action[0] == "take" && action.Length > 1)
       {
         TakeItem(action[1]);
+      }
+      else if (action[0] == "search" && action.Length > 1)
+      {
+        Search(action[1]);
+      }
+      else if (action[0] == "look")
+      {
+        Look();
       }
       else if (action[0] == "inventory")
       {
@@ -98,6 +102,10 @@ namespace CastleGrimtol.Project
       else if (action[0] == "reset")
       {
         Reset();
+      }
+      else if (action[0] == "help")
+      {
+        Help();
       }
       else
       {
@@ -125,7 +133,7 @@ namespace CastleGrimtol.Project
 
     public void Help()
     {
-
+      Console.WriteLine("Avliable Commands are: go/take/use/look/search/quit/reset");
     }
 
     public void Inventory()
@@ -141,6 +149,8 @@ namespace CastleGrimtol.Project
     public void Look()
     {
       Console.Clear();
+      Console.WriteLine(CurrentRoom.Name);
+      Console.WriteLine(CurrentRoom.Items);
       Console.WriteLine(CurrentRoom.Description);
     }
 
@@ -204,6 +214,15 @@ namespace CastleGrimtol.Project
       }
     }
 
+    public void Search(string itemName)
+    {
+      itemName.ToLower();
+      Item searchedItem = CurrentRoom.Items.Find(i => i.Name == itemName);
+      if (searchedItem != null)
+      {
+        Console.WriteLine(searchedItem.Description);
+      }
+    }
     public void StartGame(Player player)
     {
       CurrentPlayer = player;
@@ -245,8 +264,9 @@ namespace CastleGrimtol.Project
       }
       else
       {
-        Console.WriteLine("not found item");
+        Console.WriteLine("You cant find that item");
       }
+
     }
 
     public void UseItem(string itemName)

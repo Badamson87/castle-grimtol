@@ -271,6 +271,14 @@ namespace CastleGrimtol.Project
 
     public void UseItem(string itemName)
     {
+
+      Item usedItem = CurrentPlayer.Inventory.Find(i => i.Name == itemName);
+      if (usedItem == null)
+      {
+        Console.WriteLine("You dont have that");
+      }
+
+
       if (itemName == "bomb")
       {
 
@@ -292,7 +300,18 @@ namespace CastleGrimtol.Project
         {
           Console.WriteLine("You swing your sword through the air");
         }
+        else
+        {
+          // attackfunction for the sword
+        }
       }
+      else if (itemName == "crate")
+      {
+        CurrentPlayer.Inventory.Remove(usedItem);
+        CurrentRoom.Items.Add(usedItem);
+        Console.WriteLine("You Place the crate in the room");
+      }
+
 
     }
 

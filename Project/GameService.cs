@@ -51,7 +51,6 @@ namespace CastleGrimtol.Project
       storage.Exits.Add("south", main);
       bridge.Exits.Add("east", vault);
       bridge.Exits.Add("west", storage);
-      //   bridge.Exits.Add("church", church);// add from when monster
       vault.Exits.Add("west", bridge);
 
 
@@ -211,9 +210,24 @@ namespace CastleGrimtol.Project
     {
       Random random = new Random();
       damage = random.Next(20, 30);
-      Console.WriteLine($"You attack the robot for {damage} damge");
-      robot.Health = robot.Health - damage;
-      Attacked();
+      if (robot.Health > 0)
+      {
+        Console.WriteLine($"You attack the robot for {damage} damge");
+        robot.Health = robot.Health - damage;
+        if (robot.Health > 0)
+        {
+          Attacked();
+        }
+        else
+        {
+          Console.WriteLine("The robot is defeated and crumbles into a pile of parts");
+        }
+      }
+      else
+      {
+        Console.WriteLine("robot blows up and sends you to the church, you win");
+        playing = false;
+      }
     }
     public void Attacked()
     {
@@ -361,12 +375,14 @@ namespace CastleGrimtol.Project
 
         if (CurrentRoom.Name != "vault")
         {
+          Console.Clear();
           Console.WriteLine("You decide to take a quick peak at the bomb, while doing so you bump a wire and it explodes");
           Again();
           return;
         }
         else
         {
+          Console.Clear();
           Console.WriteLine("You carefully place the bomb against the vault door");
           vaultBlown = true;
           return;
@@ -406,7 +422,11 @@ namespace CastleGrimtol.Project
           Console.WriteLine("It doesn't seem to do anything");
         }
       }
-
+      else if (itemName == "flask")
+      {
+        Console.WriteLine("You chug down the flask and feel revitalized");
+        CurrentPlayer.Health = 100;
+      }
 
     }
 

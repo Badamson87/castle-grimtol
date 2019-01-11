@@ -283,6 +283,19 @@ namespace CastleGrimtol.Project
         {
           Again();
         }
+        else if (CurrentRoom.Name == "exit")
+        {
+          if (vaultBlown == false)
+          {
+            Console.WriteLine("You get cold feet and decided to leave early");
+            Again();
+          }
+          else
+          {
+            Console.WriteLine("You break through the exit and find yourself face to face with squad of armed guards. Defiently you pull out your sword and are instantly cut down by a hail of gunfire. What did you expect? You did bring a sword to a gun fight afterall.");
+            Again();
+          }
+        }
         else
         {
           Console.WriteLine("What do you want to do");

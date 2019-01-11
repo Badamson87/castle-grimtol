@@ -296,6 +296,13 @@ namespace CastleGrimtol.Project
             Again();
           }
         }
+        else if (CurrentRoom.Name == "bridge" && vaultBlown == true)
+        {
+          Console.WriteLine("A robot meets you on the bridge and attacks");
+          GetUserInput();
+        }
+
+
         else
         {
           Console.WriteLine("What do you want to do");

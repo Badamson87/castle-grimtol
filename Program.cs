@@ -12,7 +12,7 @@ namespace CastleGrimtol
       GameService gameService = new GameService();
 
       //make an instance of a player
-      Player player = new Player("Stranger");
+      Player player = new Player("Stranger", 100);
 
       //then pass the player to the gameService constructor when you create your instance of a GameService
       //

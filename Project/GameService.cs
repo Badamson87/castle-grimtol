@@ -7,12 +7,18 @@ namespace CastleGrimtol.Project
 {
   public class GameService : IGameService
   {
+    public bool fought = false;
     public bool win = false;
     public bool playing = true;
 
     public bool vaultBlown = false;
+    int damage = 0;
 
-    Player newPlayer = new Player("Stranger");
+    Player newPlayer = new Player("Stranger", 100);
+    Enemy robot = new Enemy("robot", 150);
+
+
+
     public string choice = "";
 
 
@@ -22,6 +28,9 @@ namespace CastleGrimtol.Project
 
     public void Setup()
     {
+
+      //build enemy
+
       //first, create all local variable (rooms and items) needed for gameplay
       Room platform = new Room("Platform", "description for the platform");
       Room main = new Room("main", "Description for the main room");
@@ -202,6 +211,33 @@ namespace CastleGrimtol.Project
       }
     }
 
+    public void AttackRobot()
+    {
+      Random random = new Random();
+      damage = random.Next(20, 30);
+      Console.WriteLine($"You attack the robot for {damage} damge");
+      robot.Health = robot.Health - damage;
+      Console.WriteLine($"{robot.Health}");
+      Attacked();
+    }
+    public void Attacked()
+    {
+      Random random = new Random();
+      damage = random.Next(20, 30);
+      Console.WriteLine($"The robot attacks you for {damage} damge.");
+      CurrentPlayer.Health = CurrentPlayer.Health - damage;
+      if (CurrentPlayer.Health <= 0)
+      {
+        Console.WriteLine($"You have {CurrentPlayer.Health} health remaing");
+      }
+      else
+      {
+        Console.WriteLine("You have fallen in combat");
+        Again();
+      }
+
+
+    }
     public void Again()
     {
       while (true)
@@ -272,7 +308,7 @@ namespace CastleGrimtol.Project
         {
           CurrentPlayer.Inventory.Add(foundItem);
           CurrentRoom.Items.Remove(foundItem);
-          Console.WriteLine("You got yee flask!");
+          Console.WriteLine("Standing upon the crate, you got yee flask!");
 
         }
         else
@@ -328,6 +364,11 @@ namespace CastleGrimtol.Project
         }
         else
         {
+          if (vaultBlown == true)
+          {
+            AttackRobot();
+
+          }
           // attackfunction for the sword
         }
       }
@@ -341,7 +382,7 @@ namespace CastleGrimtol.Project
       {
         if (CurrentRoom.Name == "main")
         {
-          Console.WriteLine("You slide the key into the south door it turns easily");
+          Console.WriteLine("You slide the key into the south door it's lock easily turns.");
           CurrentRoom.Exits["south"].LockedRoom = false;
         }
         else

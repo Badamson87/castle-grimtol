@@ -10,6 +10,8 @@ namespace CastleGrimtol.Project
     public bool win = false;
     public bool playing = true;
 
+    public bool vaultBlown = false;
+
     Player newPlayer = new Player("Stranger");
     public string choice = "";
 
@@ -26,7 +28,7 @@ namespace CastleGrimtol.Project
       Room storage = new Room("storage", "description for the storage room");
       Room bridge = new Room("bridge", "description for the bridge");
       Room vault = new Room("vault", "description for the vault");
-      Room exit = new Room("exit", "description for the exit");
+      Room exit = new Room("exit", "description for the exit", true);
       Room train = new Room("train", "you decided the life of a mercanary is to much for you. You board the train in search of something safer as you ponder your life choices.");
       Room church = new Room("church", "description for the church");
 
@@ -46,11 +48,11 @@ namespace CastleGrimtol.Project
 
 
       // create items
-      Item bomb = new Item("bomb", "description for the bomb");
+      Item bomb = new Item("bomb", "Your not to good with these things. Usually it owuld be a job for someone else.");
       //   Item full = new Item("full", "description for boxs full of parts");
-      Item crate = new Item("crate", "description for empty box");
-      Item key = new Item("key", "description for the key card");
-      Item flask = new Item("flask", "description for the flask");
+      Item crate = new Item("crate", "There are crates stacked throughout the room inside one you find a key");
+      Item key = new Item("key", "Looks like a normaly key. You wonder who left it behind.");
+      Item flask = new Item("flask", "Red liquid swirls inside");
       Item sword = new Item("sword", "Its still pretty sharp even if it is busted.");
 
       //second, add items to rooms and player
@@ -120,10 +122,18 @@ namespace CastleGrimtol.Project
     public void Go(string direction)
     {
       Console.Clear();
+
       if (CurrentRoom.Exits.ContainsKey(direction))
       {
-        CurrentRoom = CurrentRoom.Exits[direction];
-        Console.WriteLine(CurrentRoom.Description);
+        if (CurrentRoom.Exits[direction].LockedRoom == false)
+        {
+          CurrentRoom = CurrentRoom.Exits[direction];
+          Console.WriteLine(CurrentRoom.Description);
+        }
+        else
+        {
+          Console.WriteLine("The door is locked.");
+        }
       }
       else
       {
@@ -150,7 +160,6 @@ namespace CastleGrimtol.Project
     {
       Console.Clear();
       Console.WriteLine(CurrentRoom.Name);
-      Console.WriteLine(CurrentRoom.Items);
       Console.WriteLine(CurrentRoom.Description);
     }
 
@@ -256,7 +265,23 @@ namespace CastleGrimtol.Project
     {
       itemName.ToLower();
       Item foundItem = CurrentRoom.Items.Find(i => i.Name == itemName);
-      if (foundItem != null)
+      if (foundItem.Name == "flask")
+      {
+        Item roomItem = CurrentRoom.Items.Find(i => i.Name == "crate");
+        if (roomItem != null)
+        {
+          CurrentPlayer.Inventory.Add(foundItem);
+          CurrentRoom.Items.Remove(foundItem);
+          Console.WriteLine("You got yee flask!");
+
+        }
+        else
+        {
+          Console.WriteLine("Why in the world can you not get yee flask?");
+        }
+      }
+
+      else if (foundItem != null)
       {
         Console.WriteLine($"Adding the {itemName} to your pack");
         CurrentPlayer.Inventory.Add(foundItem);
@@ -291,6 +316,7 @@ namespace CastleGrimtol.Project
         else
         {
           Console.WriteLine("You carefully place the bomb against the vault door");
+          vaultBlown = true;
           return;
         }
       }
@@ -309,7 +335,19 @@ namespace CastleGrimtol.Project
       {
         CurrentPlayer.Inventory.Remove(usedItem);
         CurrentRoom.Items.Add(usedItem);
-        Console.WriteLine("You Place the crate in the room");
+        Console.WriteLine($"You place the crate in the {CurrentRoom.Name} room.");
+      }
+      else if (itemName == "key")
+      {
+        if (CurrentRoom.Name == "main")
+        {
+          Console.WriteLine("You slide the key into the south door it turns easily");
+          CurrentRoom.Exits["south"].LockedRoom = false;
+        }
+        else
+        {
+          Console.WriteLine("It doesn't seem to do anything");
+        }
       }
 
 

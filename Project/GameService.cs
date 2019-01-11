@@ -14,7 +14,6 @@ namespace CastleGrimtol.Project
     public bool vaultBlown = false;
     int damage = 0;
 
-    Player newPlayer = new Player("Stranger", 100);
     Enemy robot = new Enemy("robot", 150);
 
 
@@ -25,11 +24,11 @@ namespace CastleGrimtol.Project
     public IRoom CurrentRoom { get; set; }
     public Player CurrentPlayer { get; set; }
 
+    Player newPlayer = new Player("Stranger", 100);
+
 
     public void Setup()
     {
-
-      //build enemy
 
       //first, create all local variable (rooms and items) needed for gameplay
       Room platform = new Room("Platform", "description for the platform");
@@ -125,9 +124,6 @@ namespace CastleGrimtol.Project
     }
 
 
-
-
-
     public void Go(string direction)
     {
       Console.Clear();
@@ -217,7 +213,6 @@ namespace CastleGrimtol.Project
       damage = random.Next(20, 30);
       Console.WriteLine($"You attack the robot for {damage} damge");
       robot.Health = robot.Health - damage;
-      Console.WriteLine($"{robot.Health}");
       Attacked();
     }
     public void Attacked()
@@ -226,9 +221,9 @@ namespace CastleGrimtol.Project
       damage = random.Next(20, 30);
       Console.WriteLine($"The robot attacks you for {damage} damge.");
       CurrentPlayer.Health = CurrentPlayer.Health - damage;
-      if (CurrentPlayer.Health <= 0)
+      if (CurrentPlayer.Health > 0)
       {
-        Console.WriteLine($"You have {CurrentPlayer.Health} health remaing");
+        Console.WriteLine($"Health remaing: {CurrentPlayer.Health}");
       }
       else
       {
@@ -272,6 +267,7 @@ namespace CastleGrimtol.Project
     {
       CurrentPlayer = player;
       CurrentPlayer.Inventory = new List<Item>();
+      CurrentPlayer.Health = 100;
       Setup();
       Console.WriteLine("you find yourself on a platform approached by a one armed man. He reaches towards you holding a bomb in his hand");
 

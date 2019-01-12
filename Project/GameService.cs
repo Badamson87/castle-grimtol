@@ -12,30 +12,28 @@ namespace CastleGrimtol.Project
     public bool playing = true;
 
     public bool vaultBlown = false;
+
+    public bool enemyAlive = false;
     int damage = 0;
 
     Enemy robot = new Enemy("robot", 150);
 
-
-
     public string choice = "";
-
 
     public IRoom CurrentRoom { get; set; }
     public Player CurrentPlayer { get; set; }
 
     Player newPlayer = new Player("Stranger", 100);
 
-
     public void Setup()
     {
 
       //first, create all local variable (rooms and items) needed for gameplay
       Room platform = new Room("Platform", "A large open room with tracks running along the south wall. The only exit you see is to the east.");
-      Room main = new Room("main", "You enter the main staging area for the plant. You take note of an exit sign hung above the large door to the south, while doors to the north in west seem slightly less ominous. The bulk of the room is occupied by collections of crates. As you scan the room you think you catch a shimmer of light from atop the crate in the far corner.");
+      Room main = new Room("main", "You enter the main staging area for the plant taking note of an exit sign hung above the large door to the south, while doors to the north in west seem slightly less ominous. The bulk of the room is occupied by collections of crates. As you scan the room you think you catch a shimmer of light from atop the crate in the far corner.");
       Room storage = new Room("storage", "As you enter the room and instantly notice the loud buzz of the overhead lights. A single unoccupied desk sits in front of the east door, shelves on the far side of the room hold a flask.");
       Room bridge = new Room("bridge", "A suspended steel bridge stretches from east to west, The height makes you uneasy as a fall to the city below would be a poor way to die, but the obvious defense it adds to the vault is impressive.");
-      Room vault = new Room("vault", "The large door behind you is the only way in or out. A giant reactor hums away and it slowly drains life from the earth.");
+      Room vault = new Room("vault", "The large door behind you is the only way in or out. A giant reactor hums away as it slowly drains life from the earth.");
       Room exit = new Room("exit", "Stepping through the door peer out into the courtyard", true);
       Room train = new Room("train", "You decided the life of a mercanary is to much for you. You board the train in search of something safer as you ponder your life choices.");
       Room church = new Room("church", "church description");
@@ -53,7 +51,6 @@ namespace CastleGrimtol.Project
       bridge.Exits.Add("west", storage);
       vault.Exits.Add("west", bridge);
 
-
       // create items
       Item bomb = new Item("bomb", "Your not to good with these things. Usually it owuld be a job for someone else.");
       Item crate = new Item("crate", "There are crates stacked throughout the room inside one you find a key");
@@ -68,12 +65,8 @@ namespace CastleGrimtol.Project
       main.Items.Add(key);
       storage.Items.Add(flask);
       CurrentPlayer.Inventory.Add(sword);
-
-
-
       CurrentRoom = platform;
     }
-
 
     public void GetUserInput()
     {
@@ -120,7 +113,6 @@ namespace CastleGrimtol.Project
         Console.WriteLine("I am not so sure about that");
       }
     }
-
 
     public void Go(string direction)
     {
@@ -219,6 +211,7 @@ namespace CastleGrimtol.Project
         }
         else
         {
+          enemyAlive = false;
           Console.WriteLine("The robot is defeated and crumbles into a pile of parts");
         }
       }
@@ -230,7 +223,6 @@ namespace CastleGrimtol.Project
     }
     public void Attacked()
     {
-      Console.Clear();
       Random random = new Random();
       damage = random.Next(20, 30);
       Console.WriteLine($"The robot attacks you for {damage} damge.");
@@ -311,7 +303,7 @@ namespace CastleGrimtol.Project
             Again();
           }
         }
-        else if (CurrentRoom.Name == "bridge" && vaultBlown == true)
+        else if (CurrentRoom.Name == "bridge" && vaultBlown == true && enemyAlive == true)
         {
           Console.WriteLine("A large robot stands in the center of the bridge to block your way. It's poised to attack");
           GetUserInput();
@@ -333,6 +325,11 @@ namespace CastleGrimtol.Project
       itemName.ToLower();
 
       Item foundItem = CurrentRoom.Items.Find(i => i.Name == itemName);
+      if (foundItem == null)
+      {
+        Console.WriteLine("You cant find that item");
+        return;
+      }
       if (foundItem.Name == "flask")
       {
         Item roomItem = CurrentRoom.Items.Find(i => i.Name == "crate");
@@ -349,17 +346,13 @@ namespace CastleGrimtol.Project
         }
       }
 
-      else if (foundItem != null)
+      else
       {
+        Console.Clear();
         Console.WriteLine($"Adding the {itemName} to your pack");
         CurrentPlayer.Inventory.Add(foundItem);
         CurrentRoom.Items.Remove(foundItem);
       }
-      else
-      {
-        Console.WriteLine("You cant find that item");
-      }
-
     }
 
     public void UseItem(string itemName)
@@ -369,9 +362,8 @@ namespace CastleGrimtol.Project
       if (usedItem == null)
       {
         Console.WriteLine("You dont have that");
+        return;
       }
-
-
       if (itemName == "bomb")
       {
 
@@ -385,8 +377,9 @@ namespace CastleGrimtol.Project
         else
         {
           Console.Clear();
-          Console.WriteLine("You carefully place the bomb against the reactor. As you stand you hear a man yell in the distance. 'Someone has breached security sound the alarm!' You spin towards the door.");
+          Console.WriteLine("You carefully place the bomb against the reactor. In the distance you hear a man yell. 'Someone has breached security sound the alarm!'");
           vaultBlown = true;
+          enemyAlive = true;
           return;
         }
       }
@@ -394,7 +387,7 @@ namespace CastleGrimtol.Project
       {
         if (CurrentRoom.Name != "bridge")
         {
-          Console.WriteLine("You swing your sword through the air");
+          Console.WriteLine("You swing your sword through the air but it seems unphased.");
         }
         else
         {
@@ -424,9 +417,9 @@ namespace CastleGrimtol.Project
       }
       else if (itemName == "flask")
       {
+        CurrentPlayer.Inventory.Remove(usedItem);
         Console.WriteLine("You chug down the flask and feel revitalized");
         CurrentPlayer.Health = 100;
-        //CurrentPlayer.Inventory.Remove(flask); not working
       }
     }
   }

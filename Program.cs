@@ -8,6 +8,7 @@ namespace CastleGrimtol
   {
     public static void Main(string[] args)
     {
+      Console.Title = "Grimtol";
       Console.Clear();
       GameService gameService = new GameService();
 
@@ -17,9 +18,6 @@ namespace CastleGrimtol
       //then pass the player to the gameService constructor when you create your instance of a GameService
       //
       gameService.StartGame(player);
-
-
-
     }
   }
 }

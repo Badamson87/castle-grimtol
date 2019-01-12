@@ -52,7 +52,7 @@ namespace CastleGrimtol.Project
       vault.Exits.Add("west", bridge);
 
       // create items
-      Item bomb = new Item("bomb", "Your not to good with these things. Usually it owuld be a job for someone else.");
+      Item bomb = new Item("bomb", "Your not to good with these things. Usually it would be a job for someone else.");
       Item crate = new Item("crate", "There are crates stacked throughout the room inside one you find a key");
       Item key = new Item("key", "Looks like a normaly key. You wonder who left it behind.");
       Item flask = new Item("flask", "Red liquid swirls inside");
@@ -248,6 +248,7 @@ namespace CastleGrimtol.Project
         choice = Console.ReadLine();
         if (choice == "y")
         {
+          robot.Health = 150;
           vaultBlown = false;
           Console.Clear();
           StartGame(newPlayer);
